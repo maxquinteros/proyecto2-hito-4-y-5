@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Índice
+{% endblock %}
+
+{% block content %}
+  <div class="container mt-4">
+    <div class="row justify-content-center"> <!-- Centrando la fila -->
+      <div class="col-md-8"> <!-- Puedes ajustar el ancho según sea necesario -->
+        <div class="text-center mb-4">
+          <h1 class="display-4">Bienvenido a Nuestro Sistema de Gestión de Inmuebles</h1>
+          <p class="lead">Aquí puedes encontrar y gestionar propiedades para arriendo de manera sencilla y eficiente.</p>
+          <hr class="my-4" />
+        </div>
+
+        <div class="row">
+          <div class="col-md-4 d-flex justify-content-center mb-4">
+            <div class="card" style="width: 18rem;"> <!-- Ajusta el ancho de la tarjeta según sea necesario -->
+              <div class="card-body">
+                <h5 class="card-title">Buscar Inmuebles</h5>
+                <p class="card-text">Explora nuestra base de datos de inmuebles disponibles para arriendo. Filtra por comuna y región para encontrar la propiedad que se adapte a tus necesidades.</p>
+                <a href="#" class="btn btn-primary">Ver Inmuebles</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
