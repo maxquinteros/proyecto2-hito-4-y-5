@@ -78,43 +78,38 @@ def agregar_inmueble(request):
         if form.is_valid():
             inmueble = form.save(commit=False)
             try:
-                usuario = Usuarios.objects.get(user=request.user)
-                inmueble.save()
-                UsuariosInmuebles.objects.create(
-                    id_fk_usuario=usuario,
-                    id_fk_inmuebles=inmueble
-                )
-                return redirect('ver_inmuebles')
-            except Usuarios.DoesNotExist:
-                form.add_error(None, 'No se encontró el perfil del usuario.')
-    else:
-        form = InmuebleForm()
-    return render(request, 'agregar_inmueble.html', {'form': form})
-'''
-@login_required
-def agregar_inmueble(request):
-    if request.method == 'POST':
-        form = InmuebleForm(request.POST)
-        if form.is_valid():
-            inmueble = form.save(commit=False)
-            inmueble.save()
-            return redirect('index')  # Redirige a la página de inicio después de guardar
+                # Busca el perfil del usuario basado en el correo electrónico
+                usuarios = Usuarios.objects.filter(correo_electronico=request.user.email)
+
+                if usuarios.exists():
+                    usuario = usuarios.first()  # Obtén el primer usuario (ajusta según sea necesario)
+                    inmueble.save()
+                    UsuariosInmuebles.objects.create(
+                        id_fk_usuario=usuario,
+                        id_fk_inmuebles=inmueble
+                    )
+                    return redirect('ver_inmuebles')
+                else:
+                    form.add_error(None, 'No se encontró el perfil del usuario.')
+            except Exception as e:
+                form.add_error(None, str(e))
     else:
         form = InmuebleForm()
 
     return render(request, 'agregar_inmueble.html', {'form': form})
-'''
+
+
+@login_required
 def ver_inmuebles(request):
     if not request.user.is_authenticated:
         return redirect('login')
-
-    try:
-        usuario = Usuarios.objects.get(id=request.user.id)
-    
+    usuarios = Usuarios.objects.filter(correo_electronico=request.user.email)
+    if usuarios.exists():
+        usuario = usuarios.first()
         inmuebles_ids = UsuariosInmuebles.objects.filter(id_fk_usuario=usuario).values_list('id_fk_inmuebles', flat=True)
         inmuebles = Inmuebles.objects.filter(id__in=inmuebles_ids)
-        
-    except Usuarios.DoesNotExist:
-        inmuebles = Inmuebles.objects.none() 
+    else:
+        inmuebles = Inmuebles.objects.none()
 
     return render(request, 'ver_inmuebles.html', {'inmuebles': inmuebles})
+

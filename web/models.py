@@ -73,7 +73,7 @@ class Usuarios(models.Model):
     rut = models.CharField(max_length=10)
     direccion = models.CharField(max_length=255, blank=True, null=True)
     telefono_personal = models.CharField(max_length=12, blank=True, null=True)
-    correo_electronico = models.CharField(max_length=250)
+    correo_electronico = models.CharField(max_length=250, unique=True)
     tipo_usuario = models.ForeignKey(
         Roles, models.DO_NOTHING, db_column="tipo_usuario", blank=True, null=True
     )
