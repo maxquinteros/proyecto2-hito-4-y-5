@@ -129,10 +129,13 @@ def editar_inmueble(request, inmueble_id):
 
 @login_required
 def eliminar_inmueble(request, inmueble_id):
-    inmueble = get_object_or_404(Inmuebles, id=inmueble_id)
-
-    if request.method == 'POST':
+    try:
+        inmueble = Inmuebles.objects.get(id=inmueble_id)
+        UsuariosInmuebles.objects.filter(id_fk_inmuebles=inmueble).delete()
         inmueble.delete()
+        
+        messages.success(request, "Inmueble eliminado con éxito.")
         return redirect('ver_inmuebles')
-
-    return render(request, 'confirmar_eliminacion.html', {'inmueble': inmueble})
+    except Inmuebles.DoesNotExist:
+        messages.error(request, "El inmueble que intentas eliminar no existe.")
+        return redirect('ver_inmuebles')
