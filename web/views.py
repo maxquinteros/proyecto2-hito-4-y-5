@@ -143,8 +143,17 @@ def eliminar_inmueble(request, inmueble_id):
     
 @login_required
 def arrendar_inmuebles(request):
-    inmuebles = Inmuebles.objects.filter(disponible=True)
-    return render(request, 'arrendar_inmuebles.html', {'inmuebles': inmuebles})
+    usuario = Usuarios.objects.get(id=request.user.id)
+    inmuebles_disponibles = Inmuebles.objects.filter(disponible=True)
+    
+    inmuebles_arrendados = UsuariosInmuebles.objects.filter(id_fk_usuario=usuario).values_list('id_fk_inmuebles', flat=True)
+
+    return render(request, 'arrendar_inmuebles.html', {
+        'inmuebles': inmuebles_disponibles,
+        'inmuebles_arrendados': inmuebles_arrendados,
+    })
+
+
 
 @login_required
 def arrendar(request, inmueble_id):

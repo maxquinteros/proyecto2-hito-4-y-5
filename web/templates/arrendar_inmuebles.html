@@ -14,7 +14,11 @@
         Comuna: {{ inmueble.comuna }}<br>
         <form action="{% url 'arrendar' inmueble.id %}" method="post">
           {% csrf_token %}
-          <button type="submit" class="btn btn-success">Arrendar</button>
+          {% if inmueble.id in inmuebles_arrendados %}
+            <button type="submit" class="btn btn-danger">Cancelar arriendo</button>
+          {% else %}
+            <button type="submit" class="btn btn-success">Arrendar</button>
+          {% endif %}
         </form>
       </li>
     {% empty %}
