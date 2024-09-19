@@ -1,8 +1,6 @@
 <nav class="navbar navbar-expand-sm bg-light navbar-light">
   <div class="container-fluid">
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar"><span class="navbar-toggler-icon"></span></button>
     <div class="collapse navbar-collapse" id="collapsibleNavbar">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
@@ -13,16 +11,21 @@
             <a class="nav-link" href="{% url 'usuario' %}">Datos Personales</a>
           </li>
         {% endif %}
-        <li class="nav-item">
-          <a class="nav-link" href="/">Contactar</a>
-        </li>
+        {% if es_arrendador %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'agregar_inmueble' %}">Agregar nuevo inmueble</a>
+          </li>
+        {% endif %}
+        {% if es_arrendador %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'ver_inmuebles' %}">Ver Inmuebles</a>
+          </li>
+        {% endif %}
       </ul>
       <ul class="navbar-nav ms-auto d-flex align-items-center">
         {% if user.is_authenticated %}
           <li class="nav-item">
-            <span class="navbar-text me-3 badge bg-secondary rounded-pill px-3 py-2 text-light">
-              Usuario: {{ user.get_username }}
-            </span>
+            <span class="navbar-text me-3 badge bg-secondary rounded-pill px-3 py-2 text-light">Usuario: {{ user.get_username }}</span>
           </li>
           <li class="nav-item">
             <form action="{% url 'logout' %}" method="post" class="d-inline">

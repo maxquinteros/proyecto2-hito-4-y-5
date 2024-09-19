@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth import login
 from django.contrib.auth import login as auth_login
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
-from web.models import Usuarios, Roles
-from .forms import UsuarioForm
+from web.models import Usuarios, Roles, Inmuebles, UsuariosInmuebles
+from .forms import UsuarioForm, InmuebleForm
 
 
 # Create your views here.
@@ -62,5 +63,67 @@ def editar_perfil(request):
             return redirect('usuario')
     else:
         form = UsuarioForm(instance=usuario)
+
+    context = {
+        'form': form,
+        'es_arrendador': usuario.tipo_usuario.rol == 'arrendador'
+    }
+
+    return render(request, 'usuario.html', context)
+
+@login_required
+def agregar_inmueble(request):
+    if request.method == 'POST':
+        form = InmuebleForm(request.POST)
+        if form.is_valid():
+            inmueble = form.save(commit=False)
+            try:
+                usuario = Usuarios.objects.get(user=request.user)
+                inmueble.save()
+                UsuariosInmuebles.objects.create(
+                    id_fk_usuario=usuario,
+                    id_fk_inmuebles=inmueble
+                )
+                return redirect('ver_inmuebles')
+            except Usuarios.DoesNotExist:
+                form.add_error(None, 'No se encontró el perfil del usuario.')
+    else:
+        form = InmuebleForm()
+    return render(request, 'agregar_inmueble.html', {'form': form})
+'''
+@login_required
+def agregar_inmueble(request):
+    if request.method == 'POST':
+        form = InmuebleForm(request.POST)
+        if form.is_valid():
+            inmueble = form.save(commit=False)
+            inmueble.save()
+            return redirect('index')  # Redirige a la página de inicio después de guardar
+    else:
+        form = InmuebleForm()
+
+    return render(request, 'agregar_inmueble.html', {'form': form})
+
+def ver_inmuebles(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    try:
+        usuario = Usuarios.objects.get(id=request.user.id)
     
-    return render(request, 'usuario.html', {'form': form})
+        inmuebles_ids = UsuariosInmuebles.objects.filter(id_fk_usuario=usuario).values_list('id_fk_inmuebles', flat=True)
+        inmuebles = Inmuebles.objects.filter(id__in=inmuebles_ids)
+        
+    except Usuarios.DoesNotExist:
+        inmuebles = Inmuebles.objects.none() 
+
+    return render(request, 'ver_inmuebles.html', {'inmuebles': inmuebles})
+'''
+@login_required
+def ver_inmuebles(request):
+    try:
+        usuario = Usuarios.objects.get(user=request.user)
+        inmuebles = Inmuebles.objects.filter(usuariosinmuebles__id_fk_usuario=usuario)
+    except Usuarios.DoesNotExist:
+        inmuebles = Inmuebles.objects.none() 
+    return render(request, 'ver_inmuebles.html', {'inmuebles': inmuebles})
