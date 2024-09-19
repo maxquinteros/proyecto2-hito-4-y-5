@@ -103,7 +103,7 @@ def agregar_inmueble(request):
         form = InmuebleForm()
 
     return render(request, 'agregar_inmueble.html', {'form': form})
-
+'''
 def ver_inmuebles(request):
     if not request.user.is_authenticated:
         return redirect('login')
@@ -117,13 +117,4 @@ def ver_inmuebles(request):
     except Usuarios.DoesNotExist:
         inmuebles = Inmuebles.objects.none() 
 
-    return render(request, 'ver_inmuebles.html', {'inmuebles': inmuebles})
-'''
-@login_required
-def ver_inmuebles(request):
-    try:
-        usuario = Usuarios.objects.get(user=request.user)
-        inmuebles = Inmuebles.objects.filter(usuariosinmuebles__id_fk_usuario=usuario)
-    except Usuarios.DoesNotExist:
-        inmuebles = Inmuebles.objects.none() 
     return render(request, 'ver_inmuebles.html', {'inmuebles': inmuebles})
