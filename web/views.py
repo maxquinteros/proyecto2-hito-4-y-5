@@ -113,3 +113,26 @@ def ver_inmuebles(request):
 
     return render(request, 'ver_inmuebles.html', {'inmuebles': inmuebles})
 
+@login_required
+def editar_inmueble(request, inmueble_id):
+    inmueble = get_object_or_404(Inmuebles, id=inmueble_id)
+
+    if request.method == 'POST':
+        form = InmuebleForm(request.POST, instance=inmueble)
+        if form.is_valid():
+            form.save()
+            return redirect('ver_inmuebles')
+    else:
+        form = InmuebleForm(instance=inmueble)
+
+    return render(request, 'editar_inmueble.html', {'form': form, 'inmueble': inmueble})
+
+@login_required
+def eliminar_inmueble(request, inmueble_id):
+    inmueble = get_object_or_404(Inmuebles, id=inmueble_id)
+
+    if request.method == 'POST':
+        inmueble.delete()
+        return redirect('ver_inmuebles')
+
+    return render(request, 'confirmar_eliminacion.html', {'inmueble': inmueble})
