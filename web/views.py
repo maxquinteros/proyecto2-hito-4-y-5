@@ -139,3 +139,16 @@ def eliminar_inmueble(request, inmueble_id):
     except Inmuebles.DoesNotExist:
         messages.error(request, "El inmueble que intentas eliminar no existe.")
         return redirect('ver_inmuebles')
+    
+    
+@login_required
+def arrendar_inmuebles(request):
+    inmuebles = Inmuebles.objects.filter(disponible=True)
+    return render(request, 'arrendar_inmuebles.html', {'inmuebles': inmuebles})
+
+@login_required
+def arrendar(request, inmueble_id):
+    inmueble = get_object_or_404(Inmuebles, id=inmueble_id)
+    
+    messages.success(request, f'Has arrendado {inmueble.nombre} exitosamente.')
+    return redirect('arrendar_inmuebles')

@@ -53,6 +53,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'web.context_processors.es_arrendador',
+                'web.context_processors.es_arrendatario',
             ],
         },
     },

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2>Arrendar inmuebles</h2>
+  <ul class="list-group">
+    {% for inmueble in inmuebles %}
+      <li class="list-group-item">
+        <strong>{{ inmueble.nombre }}</strong><br>
+        Descripción: {{ inmueble.descripcion }}<br>
+        Dirección: {{ inmueble.direccion }}<br>
+        Precio: {{ inmueble.precio_mensual_del_arriengo }}<br>
+        Tipo: {{ inmueble.tipo_de_inmueble }}<br>
+        Comuna: {{ inmueble.comuna }}<br>
+        <form action="{% url 'arrendar' inmueble.id %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-success">Arrendar</button>
+        </form>
+      </li>
+    {% empty %}
+      <li class="list-group-item">No hay inmuebles disponibles para arrendar.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

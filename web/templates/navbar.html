@@ -21,6 +21,11 @@
             <a class="nav-link" href="{% url 'ver_inmuebles' %}">Ver Inmuebles</a>
           </li>
         {% endif %}
+        {% if es_arrendatario %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'arrendar_inmuebles' %}">Arrendar inmuebles</a>
+          </li>
+        {% endif %}
       </ul>
       <ul class="navbar-nav ms-auto d-flex align-items-center">
         {% if user.is_authenticated %}
